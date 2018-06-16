@@ -10,7 +10,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">  
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> </head>
+    
     <?php
     function show_admin_course($con)
     {
@@ -22,41 +29,74 @@
             echo "No courses are added.";
         }else
         {
-            echo "<div class=table-responsive>          
-              <table class=table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>College Name</th>
-                    <th>Branch Name</th>
-                    <th>Course Name</th>
-                    <th>Course Type ID</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>";
-                $courseSno=1;
-                while ($row = mysqli_fetch_array($result)) 
+           echo "<div class=table-responsive>          
+          <table class=table name=mytable id=mytable>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Institute Name</th>
+                <th>Academic Year</th>
+                <th>Term</th>
+                <th>Branch</th>
+                <th>Course Name</th>
+                <th>Course Type</th>
+                <th>status</th>
+                <th>View/Download</th>
+              </tr>
+            </thead>
+            <tbody>";
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result)) 
+            {
+              echo "<tr>
+                <td>".$courseSno."</td>
+                <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>";
+                
+                if($row['a_year']==0)
                 {
-                  echo "<tr>
-                    <td>".$courseSno."</td>
-                    <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>
-                    <td>".get_branch_name_from_mapid($row['map_id'],$con)."</td>
-                    <td>".$row['course_name']."</td>
-                    <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>
-                    <td><a href=deleteCourse.php?id=".$row['course_master_id']."><button class='btn btn-default'>DELETE</button></a></td>
-                  </tr>";
-                  $courseSno++;
+                  echo "<td><i>None</i></td>";
+                  echo "<td><i>None</i></td>";
+                  echo "<td><i>None</i></td>";
+                }else
+                {
+                  echo "<td><div class='fil_year'>".$row['a_year']."</td>"; 
+                    echo "<td>".$row['term']."</td>
+                <td>".$row['branch_name']."</td>";
                 }
-                  
-                  echo "
-                </tbody>
-              </table>
-            </div>";
+                  echo "<td>".$row['course_name']."</td>
+                <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>";
+                
+                if($row['status']=="NOT UPLOADED")
+                {  echo "<td><i><span style=color:red>".$row['status']."</span></i></td>";
+                  echo "<td>-</td>";
+                }else
+                {
+                  echo "<td><i>".$row['status']."</i></td>";
+                  echo "<td><a href='uploads/".$row['filename'].".pdf' target=_blank>View</a></td>
+              </tr>";
+            }
+              $courseSno++;
+            }
+              
+              echo "
+            </tbody>
+          </table>
+        </div>";
         }
 
 }
     ?>
+     <script>
+        $(document).ready(function(){
+          $("#filter_year").on("keyup", function() {
+            //alert("gek");
+            var value = $(this).val().toLowerCase();
+            $("#mytable tr").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+    </script> 
 </head>
 
 <body>
@@ -71,6 +111,11 @@
         <div class="tab-content" style="background-color: white">
             <div id="home" class="tab-pane fade in active">
                 <h3>HOME</h3>
+                <div class="form-group">
+                      <label for="sel1">Search here..</label>
+                      <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year">
+                      
+                </div>
                 <p><?php show_admin_course($con)?></p>
             </div>
             <div id="menu1" class="tab-pane fade">

@@ -21,8 +21,14 @@
         // session_register("myusername");
          $_SESSION['login_user'] = $myusername;
          $_SESSION['map_id'] = $row['map_id'];
-         
+         if($myusername=="admin" && $mypassword=="admin123")
+         {
+          header("location:admin.php");
+         }
+         else
+         {
          header("location: dashboard.php");
+       }
       }else {
          $error = "Your Login Name or Password is invalid";
          echo $error;
