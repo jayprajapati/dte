@@ -101,7 +101,8 @@
 
 <body>
     <div class="container" style="width: 90%;">
-        <h1>DTE Gujarat</h1>       
+        <h1>DTE Gujarat</h1>  <hr> 
+        <div style="width: 100%;text-align: right;"><a href=logout.php>Log Out</a></div>    
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#home">View/Download</a></li>
             <li><a data-toggle="tab" href="#menu1">Report</a></li>
@@ -110,11 +111,13 @@
 
         <div class="tab-content" style="background-color: white">
             <div id="home" class="tab-pane fade in active">
-                <h3>HOME</h3>
-                <div class="form-group">
+                
+                <div class="main">
                       <label for="sel1">Search here..</label>
-                      <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year">
-                      
+                      <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year" value="">
+                      <div style="width: 100%;text-align: right;">
+                      <a href=download_all.php><button style="" type="button" class="btn">Download All</button></a>
+                      </div>
                 </div>
                 <p><?php show_admin_course($con)?></p>
             </div>
