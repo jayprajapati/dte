@@ -1,37 +1,77 @@
 <?php include('php_include.php'); ?>
+
 <?php require('session.php'); ?>
-<?php
+<?php include('all_function.php'); ?>
+ <?php
 function display_course($con)
 {
-    # code...
-
-    $my_map=$_SESSION['map_id'];
- $sql="select * from tt_course_master WHERE map_id=$my_map";
-
-    
-  //echo $sql;
-  $result = mysqli_query($con,$sql) or die(mysqli_error($con));  
-  
- 
-   $courseCount = mysqli_num_rows($result);
-   //echo "total no of count is " .$courseCount;
-   if($courseCount==0)
-   {
-        
-        echo "<div class='alert alert-danger'>
-  <strong>Sorry! </strong>You haven't added any courses yet.
-</div>";
-   }else
-    {  
-         echo "<select class=form-control id=courseList>";
-      while($row = mysqli_fetch_array($result))
-      {
-        echo "<option>".$row['course_name']."</option>";
-      }
-      echo "</select>";
-    }
+                # code...
+                
+                $my_map = $_SESSION['map_id'];
+                $sql    = "select * from tt_course_master WHERE map_id=$my_map";
+                
+                
+                //echo $sql;
+                $result = mysqli_query($con, $sql) or die(mysqli_error($con));
+                
+                
+                $courseCount = mysqli_num_rows($result);
+                //echo "total no of count is " .$courseCount;
+                if ($courseCount == 0) {
+                                
+                                echo "<div class='alert alert-danger'>
+        <strong>Sorry! </strong>You haven't added any courses yet.
+        </div>";
+                } else {
+                                echo "<select class=form-control id=courseList>";
+                                while ($row = mysqli_fetch_array($result)) {
+                                                echo "<option>" . $row['course_name'] . "</option>";
+                                }
+                                echo "</select>";
+                }
 }
-?>
+function show_all_course($con)
+{
+    $my_map = $_SESSION['map_id'];
+    $sql="select * from tt_course_master WHERE map_id=$my_map";
+    $result=mysqli_query($con,$sql) or die(mysqli_error($con));
+    $courseCount = mysqli_num_rows($result);
+    if($courseCount == 0){
+        echo "No courses are added.";
+    }else
+    {
+        echo "<div class=table-responsive>          
+          <table class=table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Course Name</th>
+                <th>Course Type ID</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>";
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result)) 
+            {
+              echo "<tr>
+                <td>".$courseSno."</td>
+                <td>".$row['course_name']."</td>
+                <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>
+                <td><a href=deleteCourse.php?id=".$row['course_master_id']."><button class='btn btn-default'>DELETE</button></a></td>
+              </tr>";
+              $courseSno++;
+            }
+              
+              echo "
+            </tbody>
+          </table>
+        </div>";
+    }
+
+}
+?> 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -85,7 +125,10 @@ function display_course($con)
                       </select>
             </div>
             <button type="submit" class="btn btn-default" name="submitCourse" id="submitCourse">Submit Course</button>
-        </form>
+            </form>
+            <hr>
+            <h3>Manage Courses</h3>
+            <?php show_all_course($con);?>
           </div>
           <div id="menu1" class="tab-pane fade">
             <h3>Upload time-table</h3>
@@ -110,22 +153,15 @@ function display_course($con)
                       <label for="sel2">Select Term:</label>
                       <select class="form-control" id="sel2">
                        
-                        <option>--select--</option>
+                        
                         <option>ODD</option>
                         <option>EVEN</option>
                       </select>
                     </div>
                     
                     <div class="form-group">
-                      <label for="sel2">Select Branch:</label>
-                      <select class="form-control" id="sel4">
-                        <php display_branch(); ?>
-                         <option>--select--</option>
-                       <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                      </select>
+                      <label for="sel2">Enter Branch:</label>
+                      <input type="text" class="form-control" id="branchName" value=<?php echo get_branch_name_from_mapid($map_id,$con)?>>
                     </div>  
                     <div class="form-group">
                       <label>  Upload Master Time Table:</label>

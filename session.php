@@ -9,6 +9,7 @@
    $row = mysqli_fetch_array($ses_sql,MYSQLI_ASSOC);
    
    $login_session = $row['dept_uid'];
+   $map_id = $_SESSION['map_id'];
    
    if(!isset($_SESSION['login_user'])){
       header("location:login.php");
