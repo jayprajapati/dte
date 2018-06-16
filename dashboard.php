@@ -23,9 +23,10 @@ function display_course($con)
         <strong>Sorry! </strong>You haven't added any courses yet.
         </div>";
                 } else {
-                                echo "<select class=form-control id=courseList>";
+                                echo "<select class=form-control id=courseList name=courseList>";
                                 while ($row = mysqli_fetch_array($result)) {
-                                                echo "<option>" . $row['course_name'] . "</option>";
+                                    $course_name = str_replace(' ', '-', $row['course_name']);
+                                                echo "<option value=".$course_name.">" . $row['course_name'] . "</option>";
                                 }
                                 echo "</select>";
                 }
@@ -70,7 +71,8 @@ function show_all_course($con)
     }
 
 }
-?> 
+?>
+
 
 <!DOCTYPE html>
 <html>
@@ -87,7 +89,17 @@ function show_all_course($con)
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> </head>
 	
-	
+	<script>
+     $(document).ready(function ()
+        {
+            /*$('#courseList').on('change', function() {
+            //alert( this.value );
+            $temp=this.value;
+            alert($temp);
+            $("#courseList_id").val($temp);
+});*/
+        });   
+    </script>
    
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
@@ -101,7 +113,7 @@ function show_all_course($con)
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#home">Add Courses</a></li>
           <li><a data-toggle="tab" href="#menu1">Upload Time-Table</a></li>
-          <li><a data-toggle="tab" href="#menu2">View/Previous Time-Table</a></li>
+          <li><a data-toggle="tab" href="#menu2">View/Download Time-Table</a></li>
         </ul>
 
         <div class="tab-content">
@@ -133,6 +145,8 @@ function show_all_course($con)
           <div id="menu1" class="tab-pane fade">
             <h3>Upload time-table</h3>
             <label >All fields are mandatory!</label>
+                    <!-- <input type="text" class="form-control" id="courseList_id" name="courseList_id"> -->
+                     <form action="upload.php" enctype="multipart/form-data" method="post">
                     <div class="form-group">
                       <label for="sel3">Added Course:</label>
                       <?php display_course($con); ?>
@@ -140,7 +154,7 @@ function show_all_course($con)
                     </div>
                     <div class="form-group">
                       <label for="sel1">Select Academic Year :</label>
-                      <input class="date-own form-control" style="width: 300px;" type="text">
+                      <input class="date-own form-control" style="width: 300px;" type="text" id="a_year" name="a_year">
                       <script type="text/javascript">
                           $('.date-own').datepicker({
                              minViewMode: 2,
@@ -151,7 +165,7 @@ function show_all_course($con)
                     </div> 
                     <div class="form-group">
                       <label for="sel2">Select Term:</label>
-                      <select class="form-control" id="sel2">
+                      <select class="form-control" id="select_term" name="select_term">
                        
                         
                         <option>ODD</option>
@@ -161,12 +175,13 @@ function show_all_course($con)
                     
                     <div class="form-group">
                       <label for="sel2">Enter Branch:</label>
-                      <input type="text" class="form-control" id="branchName" value=<?php echo get_branch_name_from_mapid($map_id,$con)?>>
+                      <input type="text" class="form-control" id="branchName" name="branchName" value=<?php echo get_branch_name_from_mapid($map_id,$con)?>>
+                      
                     </div>  
                     <div class="form-group">
                       <label>  Upload Master Time Table:</label>
 
-                    <form action="upload.php" enctype="multipart/form-data" method="post">
+                   
                 <!--    Last name:<br /> <input type="text" name="name" value="" /><br />-->
                     <br /> <input type="file" name="classnotes" value="" /><br />
                       <input type="submit" name="submit" value="Submit" />
@@ -175,7 +190,7 @@ function show_all_course($con)
           </div>
           <div id="menu2" class="tab-pane fade">
             <h3>View TimeTable</h3>
-            <p>Some content in menu 2.</p>
+            <p><?php view_download_course($con);?></p>
           </div>
         </div>
     </div>

@@ -62,5 +62,71 @@ function get_course_type_name_from_course_type_id($course_type_id,$con)
 
        
         }
+function view_download_course($con)
+{
+    $my_map = $_SESSION['map_id'];
+    $sql="select * from tt_course_master WHERE map_id=$my_map";
+    $result=mysqli_query($con,$sql) or die(mysqli_error($con));
+    $courseCount = mysqli_num_rows($result);
+    if($courseCount == 0){
+        echo "No courses are added.";
+    }else
+    {
+        echo "<div class=table-responsive>          
+          <table class=table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Institute Name</th>
+                <th>Academic Year</th>
+                <th>Term</th>
+                <th>Branch</th>
+                <th>Course Name</th>
+                <th>Course Type</th>
+                <th>status</th>
+                <th>View/Download</th>
+              </tr>
+            </thead>
+            <tbody>";
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result)) 
+            {
+              echo "<tr>
+                <td>".$courseSno."</td>
+                <td>".get_inst_name_from_mapid($_SESSION['map_id'],$con)."</td>";
+                
+                if($row['a_year']==0)
+                {
+                  echo "<td><i>None</i></td>";
+                  echo "<td><i>None</i></td>";
+                  echo "<td><i>None</i></td>";
+                }else
+                {
+                  echo "<td>".$row['a_year']."</td>"; 
+                    echo "<td>".$row['term']."</td>
+                <td>".$row['branch_name']."</td>";
+                }
+                  echo "<td>".$row['course_name']."</td>
+                <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>";
+                
+                if($row['status']=="NOT UPLOADED")
+                {  echo "<td><i><span style=color:red>".$row['status']."</span></i></td>";
+                  echo "<td>-</td>";
+                }else
+                {
+                  echo "<td><i>".$row['status']."</i></td>";
+                  echo "<td><a href='uploads/".$row['filename'].".pdf' target=_blank>View</a></td>
+              </tr>";
+            }
+              $courseSno++;
+            }
+              
+              echo "
+            </tbody>
+          </table>
+        </div>";
+    }
 
-?>
+}
+?> 
+

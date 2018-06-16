@@ -9,6 +9,8 @@
   $map_id=$_SESSION['map_id'];
   
   $sql="insert into tt_course_master (course_name,course_type_id,map_id,a_year,term,branch_name,filename,status) values ('$courseName',$courseType,$map_id,'0','0','0','0','NOT UPLOADED')";
+
+  
     
   //echo $sql;
   $result = mysqli_query($con,$sql) or die(mysqli_error($con));  
