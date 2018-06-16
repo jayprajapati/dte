@@ -11,14 +11,25 @@ function display_course($con)
     
   //echo $sql;
   $result = mysqli_query($con,$sql) or die(mysqli_error($con));  
-  echo "<select class=form-control id=courseList>";
-   echo "<option>--select--</option>";
   
-  while($row = mysqli_fetch_array($result))
-  {
-    echo "<option>".$row['course_name']."</option>";
-  }
-  echo "</select>";
+ 
+   $courseCount = mysqli_num_rows($result);
+   //echo "total no of count is " .$courseCount;
+   if($courseCount==0)
+   {
+        
+        echo "<div class='alert alert-danger'>
+  <strong>Sorry! </strong>You haven't added any courses yet.
+</div>";
+   }else
+    {  
+         echo "<select class=form-control id=courseList>";
+      while($row = mysqli_fetch_array($result))
+      {
+        echo "<option>".$row['course_name']."</option>";
+      }
+      echo "</select>";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -80,6 +91,11 @@ function display_course($con)
             <h3>Upload time-table</h3>
             <label >All fields are mandatory!</label>
                     <div class="form-group">
+                      <label for="sel3">Added Course:</label>
+                      <?php display_course($con); ?>
+
+                    </div>
+                    <div class="form-group">
                       <label for="sel1">Select Academic Year :</label>
                       <input class="date-own form-control" style="width: 300px;" type="text">
                       <script type="text/javascript">
@@ -99,11 +115,7 @@ function display_course($con)
                         <option>EVEN</option>
                       </select>
                     </div>
-                    <div class="form-group">
-                      <label for="sel3">Added Course:</label>
-                      <?php display_course($con); ?>
-
-                    </div>
+                    
                     <div class="form-group">
                       <label for="sel2">Select Branch:</label>
                       <select class="form-control" id="sel4">
