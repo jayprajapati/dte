@@ -41,7 +41,7 @@
                 <th>Course Name</th>
                 <th>Course Type</th>
                 <th>status</th>
-                <th>View/Download</th>
+                <th>View | Download</th>
               </tr>
             </thead>
             <tbody>";
@@ -72,7 +72,8 @@
                 }else
                 {
                   echo "<td><i>".$row['status']."</i></td>";
-                  echo "<td><a href='uploads/".$row['filename'].".pdf' target=_blank>View</a></td>
+                  echo "<td><a href='uploads/".$row['filename'].".pdf' target=_blank>View</a> | ";
+                  echo "<div id=download class=download href='uploads/".$row['filename'].".pdf'><a href='uploads/".$row['filename'].".pdf' download=newfilename>Download</a></div></td>
               </tr>";
             }
               $courseSno++;
@@ -90,9 +91,19 @@
         $(document).ready(function(){
           $("#filter_year").on("keyup", function() {
             //alert("gek");
+            //var numOfVisibleRows = $('tr:visible #download');
+            //var numOfVisibleRows= document.getElementsByClassName('download');
+            /*for (var i=0;i<numOfVisibleRows.length;i++) {
+                var yes=numOfVisibleRows[i].attr('href');
+
+                alert(yes);
+            }*/
+            //alert(numOfVisibleRows);
             var value = $(this).val().toLowerCase();
             $("#mytable tr").filter(function() {
               $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+              
+
             });
           });
         });
@@ -103,6 +114,7 @@
     <div class="container" style="width: 90%;">
         <h1>DTE Gujarat</h1>  <hr> 
         <div style="width: 100%;text-align: right;"><a href=logout.php>Log Out</a></div>    
+        <div style="width: 100%;text-align: right;" id="mycountt"></div>    
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#home">View/Download</a></li>
             <li><a data-toggle="tab" href="#menu1">Report</a></li>
