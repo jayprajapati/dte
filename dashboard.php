@@ -23,18 +23,64 @@ function display_course($con)
         <strong>Sorry! </strong>You haven't added any courses yet.
         </div>";
                 } else {
-                                echo "<select class=form-control id=courseList name=courseList>";
+                                echo "<select class=form-control id=courseList name=courseID>";
                                 while ($row = mysqli_fetch_array($result)) {
                                     $course_name = str_replace(' ', '-', $row['course_name']);
-                                                echo "<option value=".$course_name.">" . $row['course_name'] . "</option>";
+                                                echo "<option value=".$row['course_master_id'].">" . $row['course_name'] . " (".get_course_type_name_from_course_master_id($row['course_master_id'],$con).") ". "</option>";
                                 }
                                 echo "</select>";
+                }
+}
+function display_added_course($con)
+{
+                # code...
+                
+                $my_map = $_SESSION['map_id'];
+                $sql    = "select * from tt_course_master WHERE map_id=$my_map";
+                $result = mysqli_query($con, $sql) or die(mysqli_error($con));
+                $courseCount = mysqli_num_rows($result);
+                if($courseCount == 0){
+                echo "No courses are added.";
+                }else
+                {
+                    echo "<div class=table-responsive>          
+                      <table class=table>
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Course Name</th>
+                            <th>Course Type ID</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>";
+                        $courseSno=1;
+                        while ($row = mysqli_fetch_array($result)) 
+                        {
+                            $id=$row['course_master_id'];
+
+                          echo "<tr>
+                            <td>".$courseSno."</td>
+                            <td>".get_course_name_from_course_master_id($id,$con)."</td>
+                            <td>".get_course_type_name_from_course_master_id($id,$con)."</td>
+                            
+
+                            <td><a href=# data-toggle=popover  data-trigger=focus data-content='Are You Sure?   <a href=deleteCourse.php?id=$id><button class=btn >DELETE</button></a>'> <span class='glyphicon glyphicon-trash'></span>
+                    </a></td></tr>";
+                          
+                          $courseSno++;
+                        }
+                          
+                          echo "
+                        </tbody>
+                      </table>
+                    </div>";
                 }
 }
 function show_all_course($con)
 {
     $my_map = $_SESSION['map_id'];
-    $sql="select * from tt_course_master WHERE map_id=$my_map";
+    $sql="select * from tt_upload_table WHERE map_id=$my_map";
     $result=mysqli_query($con,$sql) or die(mysqli_error($con));
     $courseCount = mysqli_num_rows($result);
     if($courseCount == 0){
@@ -59,8 +105,8 @@ function show_all_course($con)
 
               echo "<tr>
                 <td>".$courseSno."</td>
-                <td>".$row['course_name']."</td>
-                <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>
+                <td>".get_course_name_from_course_master_id($id,$con)."</td>
+                <td>".get_course_type_name_from_course_master_id($id,$con)."</td>
                 
 
                 <td><a href=# data-toggle=popover  data-trigger=focus data-content='Are You Sure?   <a href=deleteCourse.php?id=$id><button class=btn >DELETE</button></a>'> <span class='glyphicon glyphicon-trash'></span>
@@ -146,7 +192,7 @@ function show_all_course($con)
             </form>
             <hr>
             <h3>Manage Courses</h3>
-            <?php show_all_course($con);?>
+            <?php display_added_course($con);?>
           </div>
           <div id="menu1" class="tab-pane fade">
             <h3>Upload time-table</h3>
