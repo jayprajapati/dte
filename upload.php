@@ -13,7 +13,7 @@ $courseList = $_POST['courseList'];
  $courseList = str_replace(' ', '-', $courseList);
  $branchName = str_replace(' ', '-', $branchName);
 $map_id = $_SESSION['map_id'];	
- $name =  $map_id."_".$courseList."_".$a_year."_".$select_term."_".$branchName;
+ $name =  $map_id."_".$courseList."_".$a_year."_".$select_term;
  if (is_uploaded_file($_FILES['classnotes']['tmp_name']))
         {
 
@@ -24,7 +24,7 @@ $map_id = $_SESSION['map_id'];
                 else
                         {
                         
-                         echo $name;
+                         //echo $name;
 
                                                 // Check file size
                                                 if ($_FILES["classnotes"]["size"] > 10000000)
@@ -44,7 +44,7 @@ $map_id = $_SESSION['map_id'];
         }
 $co=str_replace('-', ' ', $courseList);
 $sql="UPDATE tt_course_master set a_year=$a_year ,term ='$select_term',branch_name='$branchName',filename='$name',status='$status' where `course_name`='$co'";
-echo $sql;
+//echo $sql;
 $result = mysqli_query($con,$sql) or die(mysqli_error($con));  
   //$row = mysqli_fetch_array($result,MYSQLI_ASSOC) or die(mysqli_error($con));
   if($result)

@@ -62,6 +62,33 @@ function get_course_type_name_from_course_type_id($course_type_id,$con)
 
        
         }
+function check_file($filename)
+{
+  $filepath="uploads/".$filename.".pdf";
+  if(file_exists($filepath))
+  {
+    return "UPLOADED";
+  }else
+  {
+    return "NOT UPLOADED";
+  }
+}
+function file_db_status_update($con,$filename,$course_master_id)
+{
+  $yes=check_file($filename);
+  if($yes=="UPLOADED")
+  {
+      
+      $sql="UPDATE `tt_course_master` SET `status` = 'UPLOADED' WHERE `tt_course_master`.`course_master_id` =$course_master_id";
+      $result = mysqli_query($con,$sql) or die("sych Error!");
+
+  }else
+  {
+      $sql="UPDATE `tt_course_master` SET `status` = 'NOT UPLOADED' WHERE `tt_course_master`.`course_master_id` =$course_master_id";
+      $result = mysqli_query($con,$sql) or die("sych Error!");
+
+  }
+}
 function view_download_course($con)
 {
     $my_map = $_SESSION['map_id'];
@@ -85,12 +112,15 @@ function view_download_course($con)
                 <th>Course Type</th>
                 <th>status</th>
                 <th>View/Download</th>
+                
               </tr>
             </thead>
             <tbody>";
             $courseSno=1;
             while ($row = mysqli_fetch_array($result)) 
             {
+              file_db_status_update($con,$row['filename'],$row['course_master_id']);
+
               echo "<tr>
                 <td>".$courseSno."</td>
                 <td>".get_inst_name_from_mapid($_SESSION['map_id'],$con)."</td>";
@@ -116,6 +146,7 @@ function view_download_course($con)
                 {
                   echo "<td><i>".$row['status']."</i></td>";
                   echo "<td><a href='uploads/".$row['filename'].".pdf' target=_blank>View</a></td>
+                  
               </tr>";
             }
               $courseSno++;

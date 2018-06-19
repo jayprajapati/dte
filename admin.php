@@ -48,7 +48,7 @@
             $courseSno=1;
             while ($row = mysqli_fetch_array($result)) 
             {
-              echo "<tr>
+              echo "<tr href='uploads/".$row['filename'].".pdf'>
                 <td>".$courseSno."</td>
                 <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>";
                 
@@ -90,23 +90,48 @@
      <script>
         $(document).ready(function(){
           $("#filter_year").on("keyup", function() {
-            //alert("gek");
-            //var numOfVisibleRows = $('tr:visible #download');
-            //var numOfVisibleRows= document.getElementsByClassName('download');
-            /*for (var i=0;i<numOfVisibleRows.length;i++) {
-                var yes=numOfVisibleRows[i].attr('href');
-
-                alert(yes);
-            }*/
-            //alert(numOfVisibleRows);
+            
             var value = $(this).val().toLowerCase();
             $("#mytable tr").filter(function() {
               $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-              
-
+              });
             });
-          });
+
+          $("#select_download").click(function ()
+            {
+                //alert("yes");
+                var jay=[];
+                $("#mytable tr").filter(function() {
+                  
+                  var temp=$(this).attr('href');
+                  //alert(temp);
+                  jay.push(temp);
+                });
+                
+                alert(jay);
+                var newjay=jay.join('|');
+                $admin=JSON.stringify(jay);
+                      $.post("newtest.php",
+                      {
+                          username:newjay
+                          
+                      },
+                    function(data, status){
+                        //alert("Data:"+data + " \nStatus: "+ status );
+                        //document.write(data);
+                        //$("#thisthis").text("yes");
+                        ///window.location.replace('index.php');
+                        
+            
+                        $("#mystatus").text(data);
+                        
+                     });
+            });
+
+
+            
         });
+
     </script> 
 </head>
 
@@ -129,6 +154,8 @@
                       <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year" value="">
                       <div style="width: 100%;text-align: right;">
                       <a href=download_all.php><button style="" type="button" class="btn">Download All</button></a>
+                      <button style="" type="button" id="select_download" class="btn">select</button></a>
+                      <div id=mystatus></div>
                       </div>
                 </div>
                 <p><?php show_admin_course($con)?></p>

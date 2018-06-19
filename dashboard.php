@@ -55,12 +55,17 @@ function show_all_course($con)
             $courseSno=1;
             while ($row = mysqli_fetch_array($result)) 
             {
+                $id=$row['course_master_id'];
+
               echo "<tr>
                 <td>".$courseSno."</td>
                 <td>".$row['course_name']."</td>
                 <td>".get_course_type_name_from_course_type_id($row['course_type_id'],$con)."</td>
-                <td><a href=deleteCourse.php?id=".$row['course_master_id']."><button class='btn btn-default'>DELETE</button></a></td>
-              </tr>";
+                
+
+                <td><a href=# data-toggle=popover  data-trigger=focus data-content='Are You Sure?   <a href=deleteCourse.php?id=$id><button class=btn >DELETE</button></a>'> <span class='glyphicon glyphicon-trash'></span>
+        </a></td></tr>";
+              
               $courseSno++;
             }
               
@@ -92,6 +97,7 @@ function show_all_course($con)
 	<script>
      $(document).ready(function ()
         {
+             $('[data-toggle="popover"]').popover({html: true}); 
             /*$('#courseList').on('change', function() {
             //alert( this.value );
             $temp=this.value;
@@ -173,7 +179,7 @@ function show_all_course($con)
                       </select>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group" style="display:none">
                       <label for="sel2">Enter Branch:</label>
                       <input type="text" class="form-control" id="branchName" name="branchName" value=<?php echo get_branch_name_from_mapid($map_id,$con)?>>
                       
