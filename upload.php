@@ -14,6 +14,19 @@ $courseList = (int) $_POST['courseID'];
 $branchName = str_replace(' ', '-', $branchName);
 $map_id = $_SESSION['map_id'];	
 $name =  $map_id."_".$courseList."_".$a_year."_".$select_term;
+
+$checkdir="uploads/";
+$file=$checkdir.$name.".pdf";
+if(file_exists($file))
+
+{
+	 echo "<script>alert('File is already Uploded..Please delete course and try again.!');</script>";
+    echo "<script>location='dashboard.php'</script>";
+    
+
+	exit();
+}
+
 if (is_uploaded_file($_FILES['classnotes']['tmp_name']))
         {
 
@@ -45,7 +58,7 @@ if (is_uploaded_file($_FILES['classnotes']['tmp_name']))
 //$co=str_replace('-', ' ', $courseList);
 
 
-$sql="insert into tt_upload_table (course_master_id,map_id,a_year,term,filename,status) values ($courseList,$map_id,$a_year,'$select_term','$name','UPLOADED')";
+$sql="insert into tt_upload_table (course_master_id,map_id,a_year,term,filename,status) values ($courseList,$map_id,'$a_year','$select_term','$name','UPLOADED')";
 /*$sql="UPDATE tt_course_master set a_year=$a_year ,term ='$select_term',branch_name='$branchName',filename='$name',status='$status' where `course_name`='$co'";*/
 //echo $sql;
 
@@ -61,14 +74,14 @@ if($result11)
   if($result)
   {
     echo "<script>alert('Uploaded Successfully!');</script>";
-    echo "<script>location='dashboard.php#menu2'</script>";
+    echo "<script>location='dashboard.php'</script>";
     
 
   }else {
     
     echo "<script>alert('Error Occured! Try Again!');</script>";
     
-    echo "<script>location='dashboard.php#menu1'</script>";
+    echo "<script>location='dashboard.php'</script>";
   } 
 
 ?>

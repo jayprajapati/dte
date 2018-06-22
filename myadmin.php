@@ -51,7 +51,7 @@
             {
               echo "<tr href='uploads/".$row['filename'].".pdf'>
                 <td>".$courseSno."</td>
-                <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>
+                <td><div class=inst>".get_inst_name_from_mapid($row['map_id'],$con)."</div></td>
                 <td>".get_branch_name_from_mapid($row['map_id'],$con)."</td>
                 <td>".get_course_name_from_course_master_id($row['course_master_id'],$con)."</td>
                 <td>".get_course_type_name_from_course_master_id($row['course_master_id'],$con)."</td>
@@ -59,13 +59,13 @@
                 
                 if($row['a_year']==0)
                 {
-                  echo "<td><i>None</i></td>";
-                  echo "<td><i>None</i></td>";
+                  echo "<td><div class='a_year'><i>None</i></div></td>";
+                  echo "<td><div class=term><i>None</i></div></td>";
                   
                 }else
                 {
-                  echo "<td><div class='fil_year'>".$row['a_year']."</td>"; 
-                    echo "<td>".$row['term']."</td>";
+                  echo "<td><div class='a_year'>".$row['a_year']."</div></td>"; 
+                    echo "<td><div class=term>".$row['term']."</div></td>";
                 }
                  
                 
@@ -92,14 +92,30 @@
     ?>
      <script>
         $(document).ready(function(){
-          $("#filter_year").on("keyup", function() {
+         $("#filter_year").on("keyup", function() {
             
             var value = $(this).val().toLowerCase();
-            $("#mytable tr").filter(function() {
-              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            $("#mytable tr .a_year").filter(function() {
+              $(this).closest("tr").toggle($(this).text().toLowerCase().indexOf(value) > -1)
               });
             });
+          $("#filter_inst").on("keyup", function() {
+                      
+                      var value = $(this).val().toLowerCase();
+                      $("#mytable tr .inst").filter(function() {
+                        $(this).closest("tr").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                      });
+          $("#filter_term").on("keyup", function() {
+                      
+                      var value = $(this).val().toLowerCase();
+                      $("#mytable tr .term").filter(function() {
+                        $(this).closest("tr").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                      });
 
+
+/*
           $("#select_download").click(function ()
             {
                 //alert("yes");
@@ -130,7 +146,7 @@
                         
                      });
             });
-
+*/
 
             
         });
@@ -154,15 +170,24 @@
             <div id="home" class="tab-pane fade">
                 
                 <div class="main">
-                      <label for="sel1">Search here..</label>
+                    <form name="sql">
+                      <label for="sel1">Institute Name:</label>
+                      <select name=clg_list>
+                      <?php all_clg($con);?>
+                    </select>
+                      <input class="form-control" style="width: 300px;" type="text" id="filter_inst" name="filter_inst" value="">
+                      <label for="sel2">Year</label>
                       <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year" value="">
+                      <label for="sel3">Term: (ODD or EVEN)</label>
+                      <input class="form-control" style="width: 300px;" type="text" id="filter_term" name="filter_term" value="">
                       <div style="width: 100%;text-align: right;">
-                      <a href=download_all.php><button style="" type="button" class="btn">Download All</button></a>
+                      <!-- <a href=download_all.php><button style="" type="button" class="btn">Download All</button></a> -->
                       <button style="" type="button" id="select_download" class="btn">select</button></a>
-                      <div id=mystatus></div>
+                      <div id=mystatus></div> 
                       </div>
+                    </form>
                 </div>
-                <p><?php show_admin_course($con)?></p>
+                <p><?php show_admin_course($con) ?></p>
             </div>
             <div id="menu1" class="tab-pane fade in active">
                 <h3>Report Card</h3>

@@ -1,4 +1,3 @@
-<?php include('php_include.php'); ?>
 
 <?php require('session.php'); ?>
 <?php include('all_function.php'); ?>
@@ -50,6 +49,7 @@ function display_added_course($con)
                             <th>#</th>
                             <th>Course Name</th>
                             <th>Course Type ID</th>
+                            <th>Edit</th>
                             <th>Delete</th>
                           </tr>
                         </thead>
@@ -58,15 +58,78 @@ function display_added_course($con)
                         while ($row = mysqli_fetch_array($result)) 
                         {
                             $id=$row['course_master_id'];
+                            echo "<div class='modal fade' id='myModal$id' role='dialog'>
+                                    <div class='modal-dialog'>
+                                    
+                                      
+                                      <div class='modal-content'>
+                                        <div class='modal-header'>
+                                          <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                          <h4 class='modal-title'>Edit Course</h4>
+                                        </div>
+                                        <div class='modal-body'>
+                                          <p>
+                                                <form name=editcourseForm method=post action=editCourse.php>
+                                                <div class=form-group>
+                                                          <label for=editcourseName>Enter Course Name:</label>
+                                                          <input type=text class=form-control id=editcourseName name=editcourseName value='".$row['course_name']."'>
+                                                          <input type=text class=form-control id=editId name=editId value=$id readonly style=display:none>
+                                                         
+                                                          
+                                                         
+                                                </div>
+                                                <div class=form-group>
+                                                          <label for=editcoursetype>Select Course Type:</label>
+                                                          
+                                                          <select class='form-control' id=editcourseType name=editcourseType>";
+                                                           
+                                                            if($row['course_type_id']==0)
+                                                                echo "<option value=0 selected>UG</option>";
+                                                            else
+                                                                echo "<option value=0>UG</option>";
+                                                            if($row['course_type_id']==1)
+                                                                echo "<option value=1 selected>PG</option>";
+                                                            else
+                                                                echo "<option value=1>PG</option>";
+                                                            if($row['course_type_id']==2)
+                                                                echo "<option value=2 selected>DIPLOMA</option>";
+                                                            else
+                                                                echo "<option value=2>DIPLOMA</option>";
+                                                            if($row['course_type_id']==3)
+                                                                echo "<option value=3 selected>PDDC</option>";
+                                                            else
+                                                                echo "<option value=3>PDDC</option>";
+                                                            echo "
+                                                          </select>
+                                                </div>
+                                                <button type='submit' class='btn btn-default' name=editsubmitCourse id=editsubmitCourse>Edit Course</button>
+                                                </form>
+                                          </p>
+                                        </div>
+                                        <div class='modal-footer'>
+                                          <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>";
+
 
                           echo "<tr>
                             <td>".$courseSno."</td>
                             <td>".get_course_name_from_course_master_id($id,$con)."</td>
                             <td>".get_course_type_name_from_course_master_id($id,$con)."</td>
-                            
+                            <td>
+                            <span class='glyphicon glyphicon-pencil' data-toggle='modal' data-target='#myModal$id'></span></td>
 
-                            <td><a href=# data-toggle=popover  data-trigger=focus data-content='Are You Sure?   <a href=deleteCourse.php?id=$id><button class=btn >DELETE</button></a>'> <span class='glyphicon glyphicon-trash'></span>
-                    </a></td></tr>";
+                            <td>
+                                <form name=delcourseForm method=post action=deleteCourse.php>
+                                    
+                                    <input type=text class=form-control id=delId name=delId value=$id readonly style=display:none;>
+                                    
+                                    <a href=# data-toggle=popover  data-trigger=focus data-content='Are You Sure?   <a href=deleteCourse.php?id=$id><button class=btn type=submit>DELETE</button></a>'> <span class='glyphicon glyphicon-trash'></span>
+                                </a></form>
+                            </td></tr>";
                           
                           $courseSno++;
                         }
@@ -149,10 +212,49 @@ function show_all_course($con)
             $temp=this.value;
             alert($temp);
             $("#courseList_id").val($temp);
+
 });*/
-        });   
+             
+    });
+
     </script>
-   
+   <script type="text/javascript">
+       function valid()
+       {
+        var myyear=document.getElementById('a_year').value;
+        //alert(myyear);
+        var n = myyear.length; 
+        if(n==9)
+        {
+            //alert("OK");
+            if(myyear.includes("-"))
+            {
+                //alert("damm OK");
+                var my= myyear.split('-');
+                var a = parseInt(my[0]);
+                var b = parseInt(my[1]);
+                if(b-a==1)
+                {
+                    return true;
+                }else{
+                    alert("Year Gap Must be 1 year only!");
+                    return false;
+                
+                }
+                
+                
+            }else{
+                alert("Year Format must be like 2014-2015 , 2015-2016")
+                return false;       
+            }
+
+        }else
+        {
+            alert("Year Format must be like 2014-2015 , 2015-2016")
+            return false;
+        }
+       }
+   </script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
 
@@ -161,25 +263,47 @@ function show_all_course($con)
         <h1>DTE Gujarat</h1>
 
         <hr>
-        <div style="width: 100%;text-align: right;"><a href=logout.php>Log Out</a></div>
+        <div style="width: 100%;text-align:right;">
+        <i><b>Hello</b></i> , <?php echo get_branch_name_from_mapid($map_id,$con); echo " , "; echo get_inst_name_from_mapid($map_id,$con); ?>
+            <br><a href=logout.php>Log Out</a></div>
+            <hr>
+        
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#home">Add Courses</a></li>
           <li><a data-toggle="tab" href="#menu1">Upload Time-Table</a></li>
           <li><a data-toggle="tab" href="#menu2">View/Download Time-Table</a></li>
         </ul>
-
+        <!-- <div class='modal fade' id='myModal' role='dialog'>
+                                    <div class='modal-dialog'>
+                                    
+                                      
+                                      <div class='modal-content'>
+                                        <div class='modal-header'>
+                                          <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                          <h4 class='modal-title'>Modal Header</h4>
+                                        </div>
+                                        <div class='modal-body'>
+                                          <p>Some text in the modal.</p>
+                                        </div>
+                                        <div class='modal-footer'>
+                                          <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+        </div> -->
         <div class="tab-content">
           <div id="home" class="tab-pane fade in active">
             <h3>Add Courses</h3>
             <form name="courseForm" method="post" action="addCourse.php">
             <div class="form-group">
                       <label for="courseName">Enter Course Name:</label>
-                      <input type="text" class="form-control" id="courseName" name="courseName">
+                      <input type="text" class="form-control" id="courseName" name="courseName" required="true">
                      
             </div>
             <div class="form-group">
                       <label for="coursetype">Select Course Type:</label>
-                      <select class="form-control" id="courseType" name="courseType">
+                      <select class="form-control" id="courseType" name="courseType" required="true">
                        
                         
                         <option value="0">UG</option>
@@ -205,13 +329,15 @@ function show_all_course($con)
 
                     </div>
                     <div class="form-group">
-                      <label for="sel1">Select Academic Year :</label>
-                      <input class="date-own form-control" style="width: 300px;" type="text" id="a_year" name="a_year">
+                      <label for="sel1">Select Academic Year :(yyyy-yyyy)</label>
+                      <input class="date-own form-control" style="width: 300px;" type="text" id="a_year" name="a_year" required="true">
                       <script type="text/javascript">
                           $('.date-own').datepicker({
                              minViewMode: 2,
                              autoclose: true,
-                             format: 'yyyy'
+                             format: 'yyyy',
+                             multidate: 2,
+                             multidateSeparator : '-'
                            });
                       </script>
                     </div> 
@@ -235,9 +361,9 @@ function show_all_course($con)
 
                    
                 <!--    Last name:<br /> <input type="text" name="name" value="" /><br />-->
-                    <br /> <input type="file" name="classnotes" value="" /><br />
+                    <br /> <input type="file" name="classnotes" value="" required="true" /><br />
                       <!-- <input type="submit" name="submit" value="Submit" /> -->
-                      <button type="submit" class="btn btn-default">Submit</button>
+                      <button type="submit" class="btn btn-default" onclick="return valid()">Submit</button>
                     </form>
                     </div>
           </div>

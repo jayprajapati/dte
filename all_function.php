@@ -134,12 +134,12 @@ function file_db_status_update($con,$filename,$course_master_id)
   if($yes=="UPLOADED")
   {
       
-      $sql="UPDATE `tt_course_master` SET `status` = 'UPLOADED' WHERE `tt_course_master`.`course_master_id` =$course_master_id";
+      $sql="UPDATE `tt_upload_table` SET `status` = 'UPLOADED' WHERE `course_master_id` =$course_master_id";
       $result = mysqli_query($con,$sql) or die("sych Error!");
 
   }else
   {
-      $sql="UPDATE `tt_course_master` SET `status` = 'NOT UPLOADED' WHERE `tt_course_master`.`course_master_id` =$course_master_id";
+      $sql="UPDATE `tt_upload_table` SET `status` = 'NOT UPLOADED' WHERE `course_master_id` =$course_master_id";
       $result = mysqli_query($con,$sql) or die("sych Error!");
 
   }
@@ -160,10 +160,11 @@ function view_download_course($con)
               <tr>
                 <th>#</th>
                 <th>Institute Name</th>
+                
                 <th>Academic Year</th>
                 <th>Term</th>
-                
                 <th>Course Type</th>
+                
                 <th>Course Name</th>
                 <th>status</th>
                 <th>View/Download</th>
@@ -180,19 +181,19 @@ function view_download_course($con)
                 <td>".$courseSno."</td>
                 <td>".get_inst_name_from_mapid($_SESSION['map_id'],$con)."</td>";
                 
-                if($row['a_year']==0)
+                if($row['status']=="NOT UPLOADED")
                 {
                   echo "<td><i>None</i></td>";
                   echo "<td><i>None</i></td>";
-                  echo "<td><i>None</i></td>";
+                  
                 }else
                 {
                   echo "<td>".$row['a_year']."</td>"; 
-                    echo "<td>".$row['term']."</td>";
-                
+                  echo "<td>".$row['term']."</td>";
+                  
                 }
-                  echo "<td>".get_course_name_from_course_master_id($row['course_master_id'],$con)."</td>
-                <td>".get_course_type_name_from_course_master_id($row['course_master_id'],$con)."</td>";
+                echo "<td>".get_course_type_name_from_course_master_id($row['course_master_id'],$con)."</td>";
+                  echo "<td>".get_course_name_from_course_master_id($row['course_master_id'],$con)."</td>";
                 
                 if($row['status']=="NOT UPLOADED")
                 {  echo "<td><i><span style=color:red>".$row['status']."</span></i></td>";
@@ -213,6 +214,121 @@ function view_download_course($con)
         </div>";
     }
 
-}
-?> 
+} 
 
+function show_admin_report($con)
+    {
+        //$my_map = $_SESSION['map_id'];
+        $sql="select * from tt_upload_table";
+        $result=mysqli_query($con,$sql) or die(mysqli_error($con));
+        $courseCount = mysqli_num_rows($result);
+        if($courseCount == 0){
+            echo "No courses are added.";
+        }else
+        {
+           echo "<div class=table-responsive>          
+          <table class=table name=mytable id=mytable>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Institute Name</th>
+                <th>Branch</th>
+                <th>Course Name</th>
+                <th>Course Type</th>
+                <th>Academic Year</th>
+                <th>Term</th>
+                
+                <th>status</th>
+                
+              </tr>
+            </thead>
+            <tbody>";
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result)) 
+            {
+              echo "<tr href='uploads/".$row['filename'].".pdf'>
+                <td>".$courseSno."</td>
+                <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>
+                <td>".get_branch_name_from_mapid($row['map_id'],$con)."</td>
+                <td>".get_course_name_from_course_master_id($row['course_master_id'],$con)."</td>
+                <td>".get_course_type_name_from_course_master_id($row['course_master_id'],$con)."</td>
+                ";
+                
+                if($row['a_year']==0)
+                {
+                  echo "<td><i>None</i></td>";
+                  echo "<td><i>None</i></td>";
+                  
+                }else
+                {
+                  echo "<td><div class='fil_year'>".$row['a_year']."</td>"; 
+                    echo "<td>".$row['term']."</td>";
+                }
+                 
+                
+                if($row['status']=="NOT UPLOADED")
+                {  echo "<td><i><span style=color:red>".$row['status']."</span></i></td>";
+                  echo "<td>-</td>";
+                }else
+                {
+                  echo "<td><i>".$row['status']."</i></td></tr>";
+            }
+              $courseSno++;
+            }
+              
+              echo "
+            </tbody>
+          </table>
+        </div>";
+        }
+
+  }
+
+function all_clg($con)
+{
+  $sql="select * from tt_institute_master";
+
+    $result=mysqli_query($con,$sql) or die(mysqli_error($con));
+    $courseCount = mysqli_num_rows($result);
+    if($courseCount == 0){
+        echo "No College are added.";
+    }else
+    {
+       
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result))
+            {
+              echo "<option value=".$row['inst_id'].">".$row['inst_name']."</option>"; 
+            } 
+      //  echo "</select>";
+  }
+}
+function get_map_ids_from_inst_id($con,$inst_id)
+{
+
+    $sql= "SELECT * FROM `tt_mpg_institute_branch` WHERE `inst_id`=$inst_id";
+
+    
+              $result = mysqli_query($con,$sql) or die("npnon");
+              $fmap_ids = "";
+              
+              if($result)
+              {
+
+                       while ($row    = mysqli_fetch_array($result))
+                              {
+
+                                      //echo $row['map_id'] . "<br>";
+                                      //$fmap_ids[]=$row['map_id'];
+                                      $fmap_ids=$fmap_ids.",".$row['map_id'];
+                                      echo $fmap_ids ."<br>";
+                                      //array_push($map_ids,$row['map_id']);
+                              }
+                      return $fmap_ids;       
+              }
+              
+              
+
+              
+}
+?>

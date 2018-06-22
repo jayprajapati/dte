@@ -7,7 +7,7 @@
  
 
 
-  $id=$_GET['id'];
+  $id=$_POST['delId'];
   $sql_for_data="SELECT * from `tt_course_master` WHERE`tt_course_master`.`course_master_id` =$id";  
   $result_for_data=mysqli_query($con,$sql_for_data) or die("Error!!");
   $sql2="select * from tt_upload_table where `tt_upload_table`.`course_master_id` =$id";
@@ -33,6 +33,16 @@
                       $filename=$rowmy['filename'].".pdf";
                       $filepath="uploads/".$filename;
                       //echo $filename;
+                      $data=$filename;
+                      $dir="uploads/";
+                      $dirHandle=opendir($dir);
+                      while($file=readdir($dirHandle))
+                      {
+                        if($file==$data)
+                        {
+                          unlink($dir."/".$file);
+                        }
+                      }/*
                       echo "<br>";
                      // echo $filepath;
                       if(file_exists("uploads/".$filepath))
@@ -44,7 +54,7 @@
                           unlink($filepath) or die("Please Try Again!");  
                         }
                       }
-                      
+                      */
                       $sql3="DELETE FROM `tt_upload_table` WHERE `tt_upload_table`.`course_master_id` =$id";  
                       $sql4="DELETE FROM `tt_course_master` WHERE `tt_course_master`.`course_master_id` =$id";  
                       $result3=mysqli_query($con,$sql3) or die("Error!!");

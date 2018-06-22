@@ -51,7 +51,7 @@
             {
               echo "<tr href='uploads/".$row['filename'].".pdf'>
                 <td>".$courseSno."</td>
-                <td>".get_inst_name_from_mapid($row['map_id'],$con)."</td>
+                <td><div class=inst>".get_inst_name_from_mapid($row['map_id'],$con)."</div></td>
                 <td>".get_branch_name_from_mapid($row['map_id'],$con)."</td>
                 <td>".get_course_name_from_course_master_id($row['course_master_id'],$con)."</td>
                 <td>".get_course_type_name_from_course_master_id($row['course_master_id'],$con)."</td>
@@ -59,13 +59,13 @@
                 
                 if($row['a_year']==0)
                 {
-                  echo "<td><i>None</i></td>";
-                  echo "<td><i>None</i></td>";
+                  echo "<td><div class='a_year'><i>None</i></div></td>";
+                  echo "<td><div class=term><i>None</i></div></td>";
                   
                 }else
                 {
-                  echo "<td><div class='fil_year'>".$row['a_year']."</td>"; 
-                    echo "<td>".$row['term']."</td>";
+                  echo "<td><div class='a_year'>".$row['a_year']."</div></td>"; 
+                    echo "<td><div class=term>".$row['term']."</div></td>";
                 }
                  
                 
@@ -92,31 +92,16 @@
     ?>
      <script>
         $(document).ready(function(){
-          $("#filter_year").on("keyup", function() {
-            
-            var value = $(this).val().toLowerCase();
-            $("#mytable tr").filter(function() {
-              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-              });
-            });
-
-          $("#select_download").click(function ()
+          $("#filter_sql").click(function ()
             {
                 //alert("yes");
                 var jay=[];
-                $("#mytable tr").filter(function() {
-                  
-                  var temp=$(this).attr('href');
-                  //alert(temp);
-                  jay.push(temp);
-                });
-                
-                alert(jay);
-                var newjay=jay.join('|');
-                $admin=JSON.stringify(jay);
+                var term=$("#term_sql").val();
+                var clg=$("#clg_list").val();
                       $.post("newtest.php",
                       {
-                          username:newjay
+                        term : term,
+                        clg : clg  
                           
                       },
                     function(data, status){
@@ -125,8 +110,8 @@
                         //$("#thisthis").text("yes");
                         ///window.location.replace('index.php');
                         
-            
-                        $("#mystatus").text(data);
+                        //alert($courseSno);
+                        $("#mystatus").html(data);
                         
                      });
             });
@@ -149,20 +134,36 @@
             
             
         </ul> 
-
+        
         <div class="tab-content" style="background-color: white">
             <div id="home" class="tab-pane fade">
-                
-                <div class="main">
-                      <label for="sel1">Search here..</label>
-                      <input class="form-control" style="width: 300px;" type="text" id="filter_year" name="filter_year" value="">
-                      <div style="width: 100%;text-align: right;">
-                      <a href=download_all.php><button style="" type="button" class="btn">Download All</button></a>
-                      <button style="" type="button" id="select_download" class="btn">select</button></a>
-                      <div id=mystatus></div>
-                      </div>
+                 <div style=width:100%;text-align:right;padding:10px;>
+                  
+                <a href=download_all.php>
+                    <button class='btn'>
+                  Download ALL | <span class='glyphicon glyphicon-download-alt'></span>   
+                  </button>
+                </a>        
                 </div>
-                <p><?php show_admin_course($con)?></p>
+                <div class="main" style="padding: 10px;">
+                    
+                      <label for="sel1">Institute Name:</label>
+                      <select name=clg_list  class="form-control" id="clg_list">
+                      <option value="*">ALL</option>
+                      <?php all_clg($con);?>
+                    </select>
+                      <label for="sel3">Term: (ODD or EVEN)</label>
+                      <select name="term_sql"  class="form-control" id="term_sql" >
+                        <option value="*">ALL</option>
+                        <option value="ODD">ODD</option>
+                        <option value="EVEN">EVEN</option>
+                      </select>
+                      <br>
+                      <button type="submit" class="btn btn-default" id="filter_sql">Submit</button>
+                    
+                      <div id="mystatus"><?php show_admin_course($con)?></div>
+                </div>
+                <p></p>
             </div>
             <div id="menu1" class="tab-pane fade in active">
                 <h3>Report Card</h3>
