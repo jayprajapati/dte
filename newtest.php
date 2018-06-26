@@ -5,9 +5,91 @@
 <?php
 $term=$_POST['term'];
 $clg=$_POST['clg'];
+$branch=$_POST['branch'];
+$course_type=$_POST['course_type'];
+$year_sql=$_POST['year_sql'];
+if($year_sql=="")
+  $year_sql='%';
+$map_id=$_SESSION['map_id'];
 
-if($term=='*' and $clg=='*')
+$sqlmaster="select ";
+if( $clg!='%')
+{
+   $sql= "SELECT * FROM `tt_mpg_institute_branch` WHERE `inst_id`=$clg";
+
+
+          $result = mysqli_query($con,$sql) or die("npnon");
+          $fmap_ids = "";
+          
+          if($result)
+          {
+
+                   while ($row    = mysqli_fetch_array($result))
+                          {
+
+                                  //echo $row['map_id'] . "<br>";
+                                  //$fmap_ids[]=$row['map_id'];
+                                  $fmap_ids=$fmap_ids.",".$row['map_id'];
+    
+                                  //array_push($map_ids,$row['map_id']);
+                          }
+                  
+          }
+          
+  
+      $fmap_ids = substr($fmap_ids, 1);
+      
+      $fmap_ids="(".$fmap_ids.")";
+      
+    $sql="SELECT * from tt_upload_table where map_id IN $fmap_ids and term like '$term' and branch_name like '$branch' and course_type_id like '$course_type' and a_year like '$year_sql' ";
+}else
+{
+  $sql="SELECT * from tt_upload_table where term like '$term' and branch_name like '$branch' and course_type_id like '$course_type' and a_year like '$year_sql' ";
+}
+
+//echo $sql;
+
+/*
+if($term=='*' and $clg=='*' and $branch=="*" and $course_type=="*" and $year_sql=="*")
 	$sql="SELECT * from tt_upload_table";
+else if($term!='*' and $clg=='*' and $branch=="*" and $course_type=="*" and $year_sql=="*")
+  $sql="SELECT * from tt_upload_table where term='$term'";
+else if($term=='*' and $clg!='*' and $branch=="*" and $course_type=="*" and $year_sql=="*")
+  {
+    $sql= "SELECT * FROM `tt_mpg_institute_branch` WHERE `inst_id`=$clg";
+
+
+          $result = mysqli_query($con,$sql) or die("npnon");
+          $fmap_ids = "";
+          
+          if($result)
+          {
+
+                   while ($row    = mysqli_fetch_array($result))
+                          {
+
+                                  //echo $row['map_id'] . "<br>";
+                                  //$fmap_ids[]=$row['map_id'];
+                                  $fmap_ids=$fmap_ids.",".$row['map_id'];
+    
+                                  //array_push($map_ids,$row['map_id']);
+                          }
+                  
+          }
+          
+  
+      $fmap_ids = substr($fmap_ids, 1);
+      
+      $fmap_ids="(".$fmap_ids.")";
+      
+    $sql="SELECT * from tt_upload_table where map_id IN $fmap_ids";
+  }
+else if($term=='*' and $clg=='*' and $branch!="*" and $course_type=="*" and $year_sql=="*")
+  $sql="SELECT * from tt_upload_table where branch_name='$branch'";
+else if($term=='*' and $clg=='*' and $branch=="*" and $course_type!="*" and $year_sql=="*")
+  $sql="SELECT * from tt_upload_table where course_type_id=$course_type";
+else if($term=='*' and $clg=='*' and $branch=="*" and $course_type=="*" and $year_sql!="*")
+  $sql="SELECT * from tt_upload_table where a_year='$year_sql'";
 else if($term=='*')
 	{
 	 $sql= "SELECT * FROM `tt_mpg_institute_branch` WHERE `inst_id`=$clg";
@@ -40,6 +122,7 @@ else if($term=='*')
 	}
 else if($clg=='*')
 	$sql="SELECT * from tt_upload_table where term='$term'";
+else if($branch=="*")
 else
 {	$sql= "SELECT * FROM `tt_mpg_institute_branch` WHERE `inst_id`=$clg";
 
@@ -69,7 +152,7 @@ else
     	
 
 	$sql="SELECT * from tt_upload_table where map_id IN $fmap_ids and term='$term'";
- }       
+ }       */
         $result=mysqli_query($con,$sql) or die(mysqli_error($con));
         $courseCount = mysqli_num_rows($result);
         if($courseCount == 0){

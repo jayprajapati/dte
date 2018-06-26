@@ -3,18 +3,21 @@
 
  include('php_include.php');
  require('session.php');
+ include('all_function.php');
 $a_year = $_POST['a_year'];
+//$a_year= substr($a_year, 0,4);
 $select_term = $_POST['select_term'];
 $branchName = $_POST['branchName'];
 $status = "UPLOADED";
 $courseList = (int) $_POST['courseID'];
-
-
+$course_type_id=get_course_type_id_from_course_master_id($courseList,$con);
+//$branch_name=get_branch_name_from_mapid($row['map_id'],$con);
+//echo $course_type_id;
  //$courseList = str_replace(' ', '-', $courseList);
-$branchName = str_replace(' ', '-', $branchName);
+//$branchName = str_replace(' ', '-', $branchName);
 $map_id = $_SESSION['map_id'];	
 $name =  $map_id."_".$courseList."_".$a_year."_".$select_term;
-
+//$a_year= substr($a_year, 0,4);
 $checkdir="uploads/";
 $file=$checkdir.$name.".pdf";
 if(file_exists($file))
@@ -58,7 +61,7 @@ if (is_uploaded_file($_FILES['classnotes']['tmp_name']))
 //$co=str_replace('-', ' ', $courseList);
 
 
-$sql="insert into tt_upload_table (course_master_id,map_id,a_year,term,filename,status) values ($courseList,$map_id,'$a_year','$select_term','$name','UPLOADED')";
+$sql="insert into tt_upload_table (course_master_id,map_id,a_year,term,filename,status,branch_name,course_type_id) values ($courseList,$map_id,'$a_year','$select_term','$name','UPLOADED','$branchName','$course_type_id')";
 /*$sql="UPDATE tt_course_master set a_year=$a_year ,term ='$select_term',branch_name='$branchName',filename='$name',status='$status' where `course_name`='$co'";*/
 //echo $sql;
 

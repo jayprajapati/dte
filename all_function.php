@@ -57,6 +57,26 @@ function get_course_name_from_course_master_id($course_master_id,$con)
                 return $course_name;
 
         }
+function get_course_type_id_from_course_master_id($course_master_id,$con)
+        {
+
+                $sql = "SELECT * from `tt_course_master` where `tt_course_master`.`course_master_id`=$course_master_id";
+                $result = mysqli_query($con,$sql);
+                if($result)
+                {
+
+                         while ($row    = mysqli_fetch_array($result))
+                                {
+
+                                        $course_type_id  = $row['course_type_id'];
+                                        //echo $course_type_name;                                 
+                                }       
+                }
+
+
+                return $course_type_id;
+
+        }
 function get_course_type_name_from_course_master_id($course_master_id,$con)
         {
 
@@ -299,6 +319,25 @@ function all_clg($con)
             while ($row = mysqli_fetch_array($result))
             {
               echo "<option value=".$row['inst_id'].">".$row['inst_name']."</option>"; 
+            } 
+      //  echo "</select>";
+  }
+}
+function all_branch($con)
+{
+  $sql="select * from tt_branch_master";
+
+    $result=mysqli_query($con,$sql) or die(mysqli_error($con));
+    $courseCount = mysqli_num_rows($result);
+    if($courseCount == 0){
+        echo "No Branches are added.";
+    }else
+    {
+       
+            $courseSno=1;
+            while ($row = mysqli_fetch_array($result))
+            {
+              echo "<option value=".$row['branch_type'].">".$row['branch_type']."</option>"; 
             } 
       //  echo "</select>";
   }

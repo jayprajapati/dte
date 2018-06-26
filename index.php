@@ -23,6 +23,8 @@
          $_SESSION['map_id'] = $row['map_id'];
          if($myusername=="admin" && $mypassword=="admin123")
          {
+          $_SESSION['map_id']=2158;
+          $_SESSION["admin"] = 2158;
           header("location:admin.php");
          }
          else

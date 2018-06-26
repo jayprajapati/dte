@@ -10,8 +10,10 @@
    
    $login_session = $row['dept_uid'];
    $map_id = $_SESSION['map_id'];
-   
+  
+  
    if(!isset($_SESSION['login_user'])){
-      header("location:login.php");
+      header("location:index.php");
    }
+   
 ?>

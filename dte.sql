@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 19, 2018 at 11:12 AM
+-- Generation Time: Jun 26, 2018 at 10:21 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 5.6.33
 
@@ -102,6 +102,18 @@ CREATE TABLE `tt_course_master` (
   `filename` text NOT NULL,
   `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tt_course_master`
+--
+
+INSERT INTO `tt_course_master` (`course_master_id`, `course_name`, `course_type_id`, `map_id`, `a_year`, `term`, `branch_name`, `filename`, `status`) VALUES
+(4, 'electrical communication', 0, 180, '0', '0', '0', '0', 'NOT UPLOADED'),
+(10, 'newnew', 1, 135, '0', '0', '0', '0', 'NOT UPLOADED'),
+(11, 'yeah bro', 1, 180, '0', '0', '0', '0', 'NOT UPLOADED'),
+(12, 'computer networks', 0, 135, '0', '0', '0', '0', 'NOT UPLOADED'),
+(13, 'aspnet', 2, 135, '0', '0', '0', '0', 'NOT UPLOADED'),
+(14, 'aspnet', 3, 135, '0', '0', '0', '0', 'NOT UPLOADED');
 
 -- --------------------------------------------------------
 
@@ -1248,8 +1260,24 @@ CREATE TABLE `tt_upload_table` (
   `a_year` varchar(255) NOT NULL,
   `term` varchar(255) NOT NULL,
   `filename` text NOT NULL,
-  `status` varchar(255) NOT NULL
+  `status` varchar(255) NOT NULL,
+  `branch_name` varchar(255) NOT NULL,
+  `course_type_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tt_upload_table`
+--
+
+INSERT INTO `tt_upload_table` (`upload_id`, `course_master_id`, `map_id`, `a_year`, `term`, `filename`, `status`, `branch_name`, `course_type_id`) VALUES
+(23, 11, 180, '0', '0', '0', 'NOT UPLOADED', '', 0),
+(24, 4, 180, '2017', 'ODD', '180_4_2017-2018_ODD', 'NOT UPLOADED', '', 0),
+(25, 4, 180, '2013', 'ODD', '180_4_2013-2014_ODD', 'NOT UPLOADED', '', 0),
+(27, 10, 135, '2017', 'ODD', '135_10_2017-2018_ODD', 'UPLOADED', '', 1),
+(28, 12, 135, '2014', 'EVEN', '135_12_2014-2015_EVEN', 'UPLOADED', 'Computer', 0),
+(29, 12, 135, '2015', 'EVEN', '135_12_2015-2016_EVEN', 'UPLOADED', 'Computer', 0),
+(31, 13, 135, '2014', 'EVEN', '135_13_2014-2015_EVEN', 'UPLOADED', 'Computer', 2),
+(33, 14, 135, '2010', 'EVEN', '135_14_2010-2011_EVEN', 'UPLOADED', 'Computer', 3);
 
 --
 -- Indexes for dumped tables
@@ -1323,13 +1351,13 @@ ALTER TABLE `tt_upload_table`
 -- AUTO_INCREMENT for table `tt_course_master`
 --
 ALTER TABLE `tt_course_master`
-  MODIFY `course_master_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `course_master_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tt_upload_table`
 --
 ALTER TABLE `tt_upload_table`
-  MODIFY `upload_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `upload_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
