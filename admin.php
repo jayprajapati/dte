@@ -32,13 +32,53 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+  
     
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">  
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">  
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> </head>
+          <!-- jay start herer -->
+    <script type=text/javascript src='uploads/jspdf.min.js'></script>
+    <script type='text/javascript' src='uploads/jspdf.plugin.autotable.js'></script>
+    
+    <script type='text/javascript'>
+    
+    var specialElementHandlers = {
+      
+      '.no-export': function(element, renderer) {
+        
+        return true;
+      }
+    };
+
+    function exportPDF() {
+
+      var doc = new jsPDF('p', 'pt', 'a4');
+      
+      var source = document.getElementById('mystatus').innerHTML;
+
+      var margins = {
+        top: 10,
+        bottom: 10,
+        left: 5,
+        width: 1000 
+      };
+
+      doc.fromHTML(
+        source, // HTML string or DOM elem ref.
+        margins.left,
+        margins.top, {
+          'width': margins.width,
+          'elementHandlers': specialElementHandlers
+        },
+
+        function(dispose) {
+          doc.save('download.pdf');
+        }, margins);
+    }
+    </script>
     
     <?php
     function show_admin_course($con)
@@ -140,7 +180,8 @@
                         
                         //alert($courseSno);
                         $("#mystatus").html(data);
-                        
+
+                          
                      });
             });
 
@@ -208,6 +249,7 @@
                     
                       <div id="mystatus"><?php show_admin_course($con)?></div>
                 </div>
+                <button id="no" onclick="exportPDF()">click me</button>
                 <p></p>
             </div>
             <div id="menu1" class="tab-pane fade in active">
