@@ -8,7 +8,8 @@ $data = unserialize($_POST['data']);
     
     $zip = new ZipArchive;
     $name=date("Y-m-d").time();
-    $download = $name.'-download.zip';
+    $random=rand(111111,999999);
+    $download = $name.'_'.$random.'-download.zip';
 
     
     if ($zip->open($download,ZipArchive::CREATE) === TRUE) 
