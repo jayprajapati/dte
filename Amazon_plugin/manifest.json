@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Job Alert Notifier",
+  "version": "1.123",
+  "permissions": [
+    "notifications",
+    "scripting",
+    "storage",
+    "activeTab",
+    "tabs"
+      ],
+  "host_permissions": ["*://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://hiring.amazon.ca/*","https://hiring.amazon.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "description": "Refreshes Amazon jobs page and alerts you when new jobs are posted."
+}
